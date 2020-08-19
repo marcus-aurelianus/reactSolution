@@ -1,0 +1,37 @@
+.navgiBar{
+    background-color:#343a40!important;
+    flex-flow:row nowrap;
+    justify-content:flex-start;
+    position:relative;
+    display:flex;
+    padding:.5rem 1rem;
+}
+
+.flexinbetween{
+    display:flex;
+    justify-content:space-between;
+    width:100%;
+}
+.graytext{
+    color:gray;
+}
+.active{ 
+    color:white;
+}
+
+.TitleItem{
+    margin-left:20rem;
+    font-size:25px;
+    color:white;
+}
+
+.rightNav{
+    margin-right:10rem;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.HomeBar{
+    margin-right:1rem;
+}

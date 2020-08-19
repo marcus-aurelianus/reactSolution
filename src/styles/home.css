@@ -1,0 +1,40 @@
+.home{
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    padding:15rem 0 20rem 0;
+}
+
+.startingText{
+  margin-left:30px;
+  font-size: 27px;
+  line-height: 45px;
+}
+
+.Searchbar {
+  width:330px;
+  height:50px;
+  border:2px solid #000;
+  border-radius:5px;
+  font-size: 32px;
+  line-height: 45px;
+  color: #999999;
+}
+
+.Searchbutton{
+  background:none;
+  border: none;
+  cursor: pointer;
+}
+
+.SearchbarWrapper{
+  width:300px;
+  height:50px;
+  display:flex;
+  justify-items: center;
+  align-items: center;
+}
+
+
+
+button:focus {outline:0;}
