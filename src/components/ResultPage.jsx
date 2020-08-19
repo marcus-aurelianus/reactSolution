@@ -7,7 +7,7 @@ import {columnDefs} from "../constants/agGridConstant";
 import { useHistory } from "react-router-dom";
 
 function ResultPage(props) {
-    let rowData=[];
+    let rowData = [];
     if (props && props.bossToEmployeeMap){
       for (const employeeInfo of props.bossToEmployeeMap){
         rowData.push(JSON.parse(employeeInfo));

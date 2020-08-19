@@ -12,27 +12,33 @@ export default class App extends Component{
     this.state = {searchBar:"",employeeTree:{},employeeQuried:{},bossToEmployeeMap:{}};
     this.changeSeachBar = this.changeSeachBar.bind(this);
     this.getEmploymentData = this.getEmploymentData.bind(this);
-    this.dealGridClick= this.dealGridClick.bind(this);
+    this.dealGridClick = this.dealGridClick.bind(this);
+    this.mainForceRender = this.mainForceRender.bind(this);
   }
 
   changeSeachBar(event){
-    console.log(event.target.value);
     this.setState({searchBar:event.target.value});
   }
 
 
   dealGridClick(event){
-    console.log(event);
     this.setState({searchBar:event.data.name});
   }
 
+  mainForceRender(historySearchContent){
+    //if we refesh meaning we need to retrieve data again
+
+    this.setState({searchBar:historySearchContent});
+  }
 
   //constructing the tree and save the query data in Cache
-  async getEmploymentData(){
+
+  //refreshData enabling data fetch when you refresh the page and all previous data lost
+  async getEmploymentData(refreshData){
     let employeeTree = this.state.employeeTree;
     let employeeQuried = this.state.employeeQuried;
     let bossToEmployeeMap = this.state.bossToEmployeeMap;
-    let bfs = [this.state.searchBar];
+    let bfs = [refreshData?refreshData:this.state.searchBar];
     while (bfs.length){
       let newbfs = [];
       for (const employeeToQuery of bfs)
@@ -44,21 +50,20 @@ export default class App extends Component{
             const responsedata=await response.json();
 
             if(responsedata.length){
-              console.log(employeeToQuery,responsedata,responsedata.length);
 
               //if exist already, add in position params
               //if not then created
               if (!employeeTree[employeeToQuery]){
-                employeeTree[employeeToQuery]={name:employeeToQuery,position:responsedata[0]};
+                employeeTree[employeeToQuery] = {name:employeeToQuery,position:responsedata[0]};
               }else{
                 employeeTree[employeeToQuery]["position"]=responsedata[0];
               }
   
-              employeeQuried[employeeToQuery]=true;
-              if (responsedata && responsedata.length==2 && responsedata[1]["direct-subordinates"]){
+              employeeQuried[employeeToQuery] = true;
+              if (responsedata && responsedata.length === 2 && responsedata[1]["direct-subordinates"]){
 
                 //create subors to pass in child reference later
-                employeeTree[employeeToQuery].subors=[];
+                employeeTree[employeeToQuery].subors = [];
                 for (let employee of responsedata[1]["direct-subordinates"]){
                   if (!employeeQuried[employee]){
 
@@ -66,7 +71,7 @@ export default class App extends Component{
 
 
                     if (!employeeTree[employee]){
-                      employeeTree[employee]={name:employee};
+                      employeeTree[employee] = {name:employee};
                     }
 
                     //pass in child object reference
@@ -85,8 +90,7 @@ export default class App extends Component{
           }
         }
       }
-      bfs=newbfs;
-      console.log(newbfs,bfs);
+      bfs = newbfs;
     }
     this.setState({employeeTree});
     this.setState({employeeQuried});
@@ -103,16 +107,16 @@ export default class App extends Component{
       }
       //if no subors
       if (!employeeTree[nodeName].subors){
-        bossToEmployeeMap[nodeName]=[];
+        bossToEmployeeMap[nodeName] = [];
         return [];
       }else{
-        let res=[];
+        let res = [];
         for (const newnode of employeeTree[nodeName].subors){
           let temres=destrucEmployeeData(newnode.name);
           res.push(...temres,JSON.stringify({name:newnode.name,position:newnode.position}));
         }
-        let finalres=[...new Set(res)];
-        bossToEmployeeMap[nodeName]=finalres;
+        let finalres = [...new Set(res)];
+        bossToEmployeeMap[nodeName] = finalres;
         return finalres;
       }
     }
@@ -121,7 +125,6 @@ export default class App extends Component{
       destrucEmployeeData(this.state.searchBar);
       this.setState({bossToEmployeeMap});
     }
-    console.log(bossToEmployeeMap);
   }
 
   render() 
@@ -129,7 +132,7 @@ export default class App extends Component{
     return (
       <div className="App">
         <Router>
-          <Navigation searchBar={this.state.searchBar}/>
+          <Navigation searchBar={this.state.searchBar} mainForceRender={this.mainForceRender} getEmploymentData={this.getEmploymentData} />
           <Switch>
             <Route path="/" exact render={() => <Home searchBar={this.state.searchBar} changeSeachBar={this.changeSeachBar} navtoUserDeatils={this.navtoUserDeatils} getEmploymentData={this.getEmploymentData}/>} />
             <Route path={`/overview/${this.state.searchBar}`} exact render={() => <ResultPage boss={this.state.searchBar} bossToEmployeeMap={this.state.bossToEmployeeMap[this.state.searchBar]} dealGridClick={this.dealGridClick}/>} />

@@ -1,7 +1,4 @@
-import React,{Component} from "react";
-import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import React from "react";
 import '../styles/home.css';
 import {search} from "../assets/index";
 import { useHistory } from "react-router-dom";
